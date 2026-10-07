@@ -1,0 +1,37 @@
+scopes:
+  source:
+    files:
+      old:
+        include:
+          - shared/**/*
+      victim:
+        include:
+          - victim/**/*
+      config:
+        include:
+          - .mergify.yml
+  merge_queue_scope: merge-queue
+
+queue_rules:
+  - name: dm-gen-261007
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-dm-gen-ci
+    batch_size: 2
+    batch_max_wait_time: 60 sec
+    merge_method: squash
+
+merge_queue:
+  mode: serial
+  max_parallel_checks: 1
+
+pull_request_rules:
+  - name: vm3 dmgen active queue 261007
+    conditions:
+      - base = main
+      - title ~= ^VM3 DMGEN ACTIVE
+      - -draft
+      - check-success = vm3-dm-gen-ci
+    actions:
+      queue:
+        name: dm-gen-261007
